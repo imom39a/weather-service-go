@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: Weather Service
-  description: "**This service uses the Open Weather API that exposes an endpoint that takes in lat/long coordinates and return what the weather condition is outside in that area (snow, rain, etc), whether it’s hot, cold, or moderate outside."
+  description: "This service uses the Open Weather API that exposes an endpoint that takes in lat/long coordinates and return what the weather condition is outside in that area (snow, rain, etc), whether it’s hot, cold, or moderate outside."
   version: 1.0.0
 servers:
   - url: http://localhost:8080

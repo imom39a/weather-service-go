@@ -60,6 +60,8 @@ The API server will start on port 8080.
 
 4. To Run tests
 
+Tests require the Open Weather API key to be set in the `.env` file.
+
 ```bash
 make test
 ```

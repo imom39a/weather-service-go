@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 	errors "weathe-service/common/error"
 	"weathe-service/internal/api"
 	"weathe-service/internal/entity"
@@ -19,21 +20,28 @@ import (
 )
 
 type WeatherService struct {
-	logger  *zap.Logger
-	apiKey  string
-	breaker *breaker.Breaker
+	logger     *zap.Logger
+	apiKey     string
+	httpClient *http.Client
+	breaker    *breaker.Breaker
 }
 
-func NewWeatherService(logger *zap.Logger) *WeatherService {
+func NewWeatherService(logger *zap.Logger, httpClient *http.Client) *WeatherService {
 	key := os.Getenv("WEATHER_SERVICE_API_KEY")
 	if key == "" {
 		log.Fatal("WEATHER_SERVICE_API_KEY is not set")
 		panic("WEATHER_SERVICE_API_KEY is not set")
 	}
+	errorThreshold := 3
+	successThreshold := 1
+	timeOutPeriod := 5
+	timeout := time.Duration(timeOutPeriod) * time.Second
+
 	return &WeatherService{
-		apiKey:  key,
-		logger:  logger,
-		breaker: breaker.New(3, 1, 5), // 3 failures in 5 seconds will trip the breaker
+		apiKey:     key,
+		logger:     logger,
+		httpClient: httpClient,
+		breaker:    breaker.New(errorThreshold, successThreshold, timeout),
 	}
 }
 
@@ -48,7 +56,7 @@ func (s *WeatherService) GetWeather(ctx context.Context, lat, lon float32, unit 
 	var weatherResponse entity.WeatherResponse
 	err := s.breaker.Run(func() error {
 		httpClient := &http.Client{}
-		req, err := http.NewRequest("GET", url, nil)
+		req, err := http.NewRequest(http.MethodGet, url, nil)
 		if err != nil {
 			s.logger.Error("failed to create request", zap.Error(err))
 			return errors.NewAPIError(http.StatusInternalServerError, "failed to create request", err)
@@ -120,12 +128,15 @@ func float64ToFloat32Ptr(f float64) *float32 {
 }
 
 func getTemperatureDescription(temp float64) string {
+	coldTemperatureThreshold := 283.15
+	moderateTemperatureThreshold := 293.15
+	warmTemperatureThreshold := 303.15
 	switch {
-	case temp < 283.15:
+	case temp < coldTemperatureThreshold:
 		return "cold"
-	case temp < 293.15:
+	case temp < moderateTemperatureThreshold:
 		return "moderate"
-	case temp < 303.15:
+	case temp < warmTemperatureThreshold:
 		return "warm"
 	default:
 		return "hot"

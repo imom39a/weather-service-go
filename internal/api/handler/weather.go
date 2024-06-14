@@ -14,10 +14,10 @@ type WeatherHandler struct {
 	weatherService *service.WeatherService
 }
 
-func NewWeatherHandler(logger *zap.Logger) *WeatherHandler {
+func NewWeatherHandler(logger *zap.Logger, httpClient *http.Client) *WeatherHandler {
 	return &WeatherHandler{
 		logger:         logger,
-		weatherService: service.NewWeatherService(logger),
+		weatherService: service.NewWeatherService(logger, httpClient),
 	}
 }
 func (h *WeatherHandler) GetWeather(ctx echo.Context, params api.GetWeatherParams) error {
