@@ -1,0 +1,57 @@
+openapi: 3.0.1
+info:
+  title: Weather Service
+  description: "**This service uses the Open Weather API that exposes an endpoint that takes in lat/long coordinates and return what the weather condition is outside in that area (snow, rain, etc), whether it’s hot, cold, or moderate outside."
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local server
+paths:
+  /health:
+    get:
+      summary: Health check
+      description: Check if the service is up and running
+      responses:
+        '200':
+          description: Service is up and running
+        '500':
+          description: Service is down
+  /weather:
+    get:
+      summary: Get weather
+      description: Get the weather condition outside in a specific area
+      parameters:
+        - name: lat
+          in: query
+          description: Latitude
+          required: true
+          schema:
+            type: number
+        - name: lon
+          in: query
+          description: Longitude
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Weather information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  weather:
+                    type: string
+                  temperature:
+                    type: number
+                  feels_like:
+                    type: number
+                  humidity:
+                    type: number
+                  wind_speed:
+                    type: number
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error

@@ -1,0 +1,81 @@
+## Reference https://github.com/golangci/golangci-lint/blob/master/.golangci.reference.yml
+run:
+  concurrency: 4
+  timeout: 5m
+  issues-exit-code: 2
+  modules-download-mode: readonly
+  
+
+linters:
+  enable-all: false
+  disable:
+    - maligned
+    - exhaustivestruct
+  enable:
+    - gosec
+    - govet
+    - staticcheck
+    - unconvert
+    - errcheck
+    - goimports
+    - misspell
+    - unused
+    - unused
+    - gochecknoinits
+    - bodyclose
+    - cyclop
+    - errname
+    - goconst
+    - goimports
+    - loggercheck
+    - mnd
+    - spancheck
+    - stylecheck
+    - unconvert
+    - unparam
+    - usestdlibvars
+    - wastedassign
+    - whitespace
+
+linters-settings:
+  cyclop:
+    max-complexity: 30
+    package-average: 10.0
+    skip-tests: true
+  stylecheck:
+    checks:
+      - all
+      - -ST1003
+  mnd:
+    ignored-files:
+      - "common/constant/.*\\.go"
+  gosec:
+    excludes:
+      - G505
+      - G401
+
+issues:
+  max-same-issues: 50
+
+  exclude-rules:
+    - path: "_test\\.go"
+      linters:
+        - bodyclose
+        - dupl
+        - funlen
+        - goconst
+        - gosec
+        - noctx
+        - wrapcheck
+    - path: common/constant/.*\.go
+      linters:
+        - goconst
+        - gosec
+        - govet
+        - unparam
+        - unconvert
+        - gochecknoinits
+        - goimports
+    - path: internal/infrastructure/cache/redis.go
+      linters:
+        - gosec
