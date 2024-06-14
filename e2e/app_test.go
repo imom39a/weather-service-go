@@ -5,10 +5,11 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"weathe-service/common/logger"
+	"weathe-service/common/server"
 	"weathe-service/internal/api"
 	handlers "weathe-service/internal/api/handler"
 
-	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -32,10 +33,9 @@ func TestApi(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			req := tt.prepare()
 			rec := httptest.NewRecorder()
-			e := echo.New()
-			api.RegisterHandlers(e, handlers.NewCompositeHandler())
+			e := server.CreateServer()
+			api.RegisterHandlers(e, handlers.NewCompositeHandler(logger.NewLogger()))
 			e.ServeHTTP(rec, req)
-
 			body, _ := io.ReadAll(rec.Body)
 			tt.assertFunc(t, rec.Result(), body)
 		})

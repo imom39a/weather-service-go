@@ -33,25 +33,59 @@ paths:
           required: true
           schema:
             type: number
+        - name: unit
+          in: query
+          description: Temperature unit
+          required: false
+          schema:
+            type: string
+            enum:
+              - metric
+              - imperial              
       responses:
         '200':
           description: Weather information
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  weather:
-                    type: string
-                  temperature:
-                    type: number
-                  feels_like:
-                    type: number
-                  humidity:
-                    type: number
-                  wind_speed:
-                    type: number
+                $ref: '#/components/schemas/WeatherResponse'
         '400':
           description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '500':
           description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        
+components:
+  schemas:    
+    WeatherResponse:
+      type: object
+      properties:
+        temperatureCondition:
+          type: string
+          description: "Hot, cold, or moderate"
+        weatherCondition:
+          type: string
+          description: "Rain, snow, etc"
+        temperature:
+          type: number
+          description: "Temperature in the area"
+        unit:
+          type: string
+          description: "Temperature unit"          
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: "Error code"
+        message:
+          type: string
+          description: "Error message"
+    

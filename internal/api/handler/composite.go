@@ -1,13 +1,15 @@
 package api
 
+import "go.uber.org/zap"
+
 type CompositeHandler struct {
 	*WeatherHandler
 	*HealthHandler
 }
 
-func NewCompositeHandler() *CompositeHandler {
+func NewCompositeHandler(logger *zap.Logger) *CompositeHandler {
 	return &CompositeHandler{
-		WeatherHandler: NewWeatherHandler(),
-		HealthHandler:  NewHealthHandler(),
+		WeatherHandler: NewWeatherHandler(logger),
+		HealthHandler:  NewHealthHandler(logger),
 	}
 }

@@ -4,8 +4,8 @@ go 1.21.10
 
 require (
 	github.com/deepmap/oapi-codegen v1.16.3
+	github.com/eapache/go-resiliency v1.6.0
 	github.com/golangci/golangci-lint v1.59.1
-	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/echo/v4 v4.11.4
 	github.com/oapi-codegen/runtime v1.1.1
 	github.com/stretchr/testify v1.9.0

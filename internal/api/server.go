@@ -55,6 +55,13 @@ func (w *ServerInterfaceWrapper) GetWeather(ctx echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter lon: %s", err))
 	}
 
+	// ------------- Optional query parameter "unit" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "unit", ctx.QueryParams(), &params.Unit)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter unit: %s", err))
+	}
+
 	// Invoke the callback with all the unmarshaled arguments
 	err = w.Handler.GetWeather(ctx, params)
 	return err
